@@ -1,0 +1,98 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d47500ffc70d0f141a25b71212caa2e3, type: 3}
+  m_Name: testConfig
+  m_EditorClassIdentifier: 
+  mode: 0
+  mediaType: 0
+  imagePool:
+  - {fileID: 21300000, guid: e1dfa5bd8fdd6d548b7124af8940ac75, type: 3}
+  - {fileID: 21300000, guid: 00172f7f40cbb99469c9347e60e0889e, type: 3}
+  - {fileID: 21300000, guid: 5bd7e56bdeba39040944a202b1e255fc, type: 3}
+  - {fileID: 21300000, guid: 075b3f76e933ee74eb63b627e2a27061, type: 3}
+  videoPool: []
+  stimulusDuration: 2
+  interStimulusInterval: 0.5
+  interTrialInterval: 1
+  trials:
+  - trialName: "\u6E38\u620F\u9875\u9762UI vs git"
+    imageA: {fileID: 21300000, guid: 00172f7f40cbb99469c9347e60e0889e, type: 3}
+    videoA: {fileID: 0}
+    imageB: {fileID: 21300000, guid: 5bd7e56bdeba39040944a202b1e255fc, type: 3}
+    videoB: {fileID: 0}
+    correctOption: 0
+  - trialName: "git vs \u5FAE\u4FE1\u56FE\u7247_20251126123400_8_75"
+    imageA: {fileID: 21300000, guid: 5bd7e56bdeba39040944a202b1e255fc, type: 3}
+    videoA: {fileID: 0}
+    imageB: {fileID: 21300000, guid: 075b3f76e933ee74eb63b627e2a27061, type: 3}
+    videoB: {fileID: 0}
+    correctOption: 0
+  - trialName: "\u5F3A\u5316\u9009\u62E9 vs \u5FAE\u4FE1\u56FE\u7247_20251126123400_8_75"
+    imageA: {fileID: 21300000, guid: e1dfa5bd8fdd6d548b7124af8940ac75, type: 3}
+    videoA: {fileID: 0}
+    imageB: {fileID: 21300000, guid: 075b3f76e933ee74eb63b627e2a27061, type: 3}
+    videoB: {fileID: 0}
+    correctOption: 0
+  - trialName: "\u6E38\u620F\u9875\u9762UI vs \u5FAE\u4FE1\u56FE\u7247_20251126123400_8_75"
+    imageA: {fileID: 21300000, guid: 00172f7f40cbb99469c9347e60e0889e, type: 3}
+    videoA: {fileID: 0}
+    imageB: {fileID: 21300000, guid: 075b3f76e933ee74eb63b627e2a27061, type: 3}
+    videoB: {fileID: 0}
+    correctOption: 0
+  - trialName: "\u5FAE\u4FE1\u56FE\u7247_20251126123400_8_75 vs git"
+    imageA: {fileID: 21300000, guid: 075b3f76e933ee74eb63b627e2a27061, type: 3}
+    videoA: {fileID: 0}
+    imageB: {fileID: 21300000, guid: 5bd7e56bdeba39040944a202b1e255fc, type: 3}
+    videoB: {fileID: 0}
+    correctOption: 0
+  - trialName: "git vs \u6E38\u620F\u9875\u9762UI"
+    imageA: {fileID: 21300000, guid: 5bd7e56bdeba39040944a202b1e255fc, type: 3}
+    videoA: {fileID: 0}
+    imageB: {fileID: 21300000, guid: 00172f7f40cbb99469c9347e60e0889e, type: 3}
+    videoB: {fileID: 0}
+    correctOption: 0
+  - trialName: "\u6E38\u620F\u9875\u9762UI vs \u5F3A\u5316\u9009\u62E9"
+    imageA: {fileID: 21300000, guid: 00172f7f40cbb99469c9347e60e0889e, type: 3}
+    videoA: {fileID: 0}
+    imageB: {fileID: 21300000, guid: e1dfa5bd8fdd6d548b7124af8940ac75, type: 3}
+    videoB: {fileID: 0}
+    correctOption: 0
+  - trialName: "\u5F3A\u5316\u9009\u62E9 vs \u6E38\u620F\u9875\u9762UI"
+    imageA: {fileID: 21300000, guid: e1dfa5bd8fdd6d548b7124af8940ac75, type: 3}
+    videoA: {fileID: 0}
+    imageB: {fileID: 21300000, guid: 00172f7f40cbb99469c9347e60e0889e, type: 3}
+    videoB: {fileID: 0}
+    correctOption: 0
+  - trialName: "git vs \u5F3A\u5316\u9009\u62E9"
+    imageA: {fileID: 21300000, guid: 5bd7e56bdeba39040944a202b1e255fc, type: 3}
+    videoA: {fileID: 0}
+    imageB: {fileID: 21300000, guid: e1dfa5bd8fdd6d548b7124af8940ac75, type: 3}
+    videoB: {fileID: 0}
+    correctOption: 0
+  - trialName: "\u5FAE\u4FE1\u56FE\u7247_20251126123400_8_75 vs \u6E38\u620F\u9875\u9762UI"
+    imageA: {fileID: 21300000, guid: 075b3f76e933ee74eb63b627e2a27061, type: 3}
+    videoA: {fileID: 0}
+    imageB: {fileID: 21300000, guid: 00172f7f40cbb99469c9347e60e0889e, type: 3}
+    videoB: {fileID: 0}
+    correctOption: 0
+  - trialName: "\u5F3A\u5316\u9009\u62E9 vs git"
+    imageA: {fileID: 21300000, guid: e1dfa5bd8fdd6d548b7124af8940ac75, type: 3}
+    videoA: {fileID: 0}
+    imageB: {fileID: 21300000, guid: 5bd7e56bdeba39040944a202b1e255fc, type: 3}
+    videoB: {fileID: 0}
+    correctOption: 0
+  - trialName: "\u5FAE\u4FE1\u56FE\u7247_20251126123400_8_75 vs \u5F3A\u5316\u9009\u62E9"
+    imageA: {fileID: 21300000, guid: 075b3f76e933ee74eb63b627e2a27061, type: 3}
+    videoA: {fileID: 0}
+    imageB: {fileID: 21300000, guid: e1dfa5bd8fdd6d548b7124af8940ac75, type: 3}
+    videoB: {fileID: 0}
+    correctOption: 0
