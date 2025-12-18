@@ -75,5 +75,5 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 
 
-[Ll]ibrary/EditorVersion.txt
+ProjectSettings/ProjectVersion.txt
 # End of https://www.toptal.com/developers/gitignore/api/unity
