@@ -364,24 +364,24 @@ MonoBehaviour:
   m_Name: Standalone
   m_EditorClassIdentifier: 
   features:
-  - {fileID: 4797568688011690038}
-  - {fileID: 3957541340344638878}
+  - {fileID: -2135508504973148812}
   - {fileID: -4935482317798295382}
+  - {fileID: -318326521754921056}
+  - {fileID: 3957541340344638878}
+  - {fileID: 8341286737598534651}
   - {fileID: -8965402142181599592}
+  - {fileID: -1737909902883259612}
+  - {fileID: 4666714437130800579}
+  - {fileID: -5456445167132378359}
+  - {fileID: -8486583361536377335}
   - {fileID: 4634742527312218306}
   - {fileID: 8173724927607572470}
-  - {fileID: -3896112986422189508}
-  - {fileID: 4666714437130800579}
-  - {fileID: 8341286737598534651}
-  - {fileID: -2830141517195186379}
-  - {fileID: -8486583361536377335}
-  - {fileID: -5456445167132378359}
-  - {fileID: -1037732917792211817}
-  - {fileID: -8709404697521510476}
-  - {fileID: -1737909902883259612}
-  - {fileID: -318326521754921056}
   - {fileID: 1097073676600072191}
-  - {fileID: -2135508504973148812}
+  - {fileID: -2830141517195186379}
+  - {fileID: -1037732917792211817}
+  - {fileID: 4797568688011690038}
+  - {fileID: -3896112986422189508}
+  - {fileID: -8709404697521510476}
   m_renderMode: 1
   m_autoColorSubmissionMode: 1
   m_colorSubmissionModes:
@@ -402,7 +402,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 761fdd4502cb7a84e9ec7a2b24f33f37, type: 3}
   m_Name: MicrosoftMotionControllerProfile Standalone
   m_EditorClassIdentifier: 
-  m_enabled: 0
+  m_enabled: 1
   nameUi: Microsoft Motion Controller Profile
   version: 0.0.1
   featureIdInternal: com.unity.openxr.feature.input.microsoftmotioncontroller
