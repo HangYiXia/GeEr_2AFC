@@ -7,7 +7,6 @@ public class CSVWriter
 {
     private string filePath;
     private StreamWriter writer;
-    private bool isFileCreated = false;
 
     public CSVWriter(string directory, string filename)
     {
@@ -34,7 +33,6 @@ public class CSVWriter
             string line = string.Join(",", headers);
             writer.WriteLine(line);
         }
-        isFileCreated = true;
     }
 
     // 2. 写入一行数据 (可扩展性体现在这里：传入一个列表即可)

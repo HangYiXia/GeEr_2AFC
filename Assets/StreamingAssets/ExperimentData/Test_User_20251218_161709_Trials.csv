@@ -1,0 +1,4 @@
+﻿Trial_ID,Trial_Name,Condition,Stimulus_Left,Stimulus_Right,User_Choice,Is_Correct,Reaction_Time
+0,游戏页面UI vs git,Normal,游戏页面UI,git,Left/A,0,4.966
+1,git vs 微信图片_20251126123400_8_75,Normal,git,微信图片_20251126123400_8_75,Right/B,0,1.979
+2,强化选择 vs 微信图片_20251126123400_8_75,Normal,强化选择,微信图片_20251126123400_8_75,Right/B,0,0.436

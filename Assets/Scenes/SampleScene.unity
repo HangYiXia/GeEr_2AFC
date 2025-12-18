@@ -1366,7 +1366,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 556015e4f439f1b44a8d6392609f8615, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  config: {fileID: 11400000, guid: b7a860251342a6345a1ee105318468ce, type: 2}
+  config: {fileID: 11400000, guid: f3d4d29a369ab1a4f9760618007c0ed0, type: 2}
   inputHandler: {fileID: 1602162889}
   dataRecorder: {fileID: 1813175038}
   containerLeft: {fileID: 900040875}

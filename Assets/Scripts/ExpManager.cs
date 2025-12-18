@@ -6,32 +6,36 @@ using System.Collections.Generic;
 
 public class ExperimentManager : MonoBehaviour
 {
-    [Header("引用配置")]
-    public ExperimentConfig config; // 拖入刚才创建的配置文件
+    [Header("1. 引用配置")]
+    public ExperimentConfig config; 
 
-    [Header("输入模块")]
-    // 拖入任何继承自 BaseInputHandler 的脚本
-    public BaseInputHandler inputHandler;
+    [Header("2. 核心模块")]
+    public BaseInputHandler inputHandler; // 你的输入脚本
+    public DataRecorder dataRecorder;     // 你的数据记录脚本
 
-    [Header("数据记录")]
-    public DataRecorder dataRecorder;
-
-    [Header("UI 绑定")]
+    [Header("3. UI 组件绑定")]
     public GameObject containerLeft;
     public GameObject containerRight;
     public Image imgLeft, imgRight;
     public RawImage rawVideoLeft, rawVideoRight;
     public VideoPlayer vpLeft, vpRight;
-    public GameObject fixationCross;
-    public GameObject feedbackPanel; // 比如显示 "请按键选择"
+    public GameObject fixationCross; // 注视点
+    public GameObject feedbackPanel; // 选择提示/遮罩
 
+    // 私有状态变量
     private int currentTrialIndex = 0;
     private bool isWaitingForInput = false;
+    private List<TrialData> currentSubjectTrials; // 缓存当前被试的列表
 
     void Start()
     {
-        if (config == null) { Debug.LogError("请配置 ExperimentConfig!"); return; }
+        if (config == null || inputHandler == null) 
+        { 
+            Debug.LogError("Config 或 InputHandler 未绑定！"); 
+            return; 
+        }
 
+        // 订阅输入事件
         inputHandler.OnSelectionMade += OnUserResponded;
 
         StartCoroutine(RunExperimentFlow());
@@ -39,29 +43,38 @@ public class ExperimentManager : MonoBehaviour
 
     void OnDestroy()
     {
-        // 养成好习惯，记得取消订阅
         if(inputHandler != null)
             inputHandler.OnSelectionMade -= OnUserResponded;
     }
 
     IEnumerator RunExperimentFlow()
     {
-        // 遍历所有 Trial
-        for (int i = 0; i < config.trials.Count; i++)
+        // 1. 获取当前被试的数据
+        currentSubjectTrials = config.GetCurrentSubjectTrials();
+
+        if (currentSubjectTrials == null || currentSubjectTrials.Count == 0)
+        {
+            Debug.LogError($"ID 为 {config.currentSubjectID} 的被试数据为空！请先在 Config 里生成数据。");
+            yield break; // 停止运行
+        }
+
+        Debug.Log($"实验开始：被试 ID {config.currentSubjectID}，共 {currentSubjectTrials.Count} 个试次。");
+
+        // 2. 循环执行每一个试次
+        for (int i = 0; i < currentSubjectTrials.Count; i++)
         {
             currentTrialIndex = i;
-            TrialData currentTrial = config.trials[i];
+            TrialData currentTrial = currentSubjectTrials[i];
 
-            
-
-            // 1. 初始化状态 (隐藏所有)
+            // A. 初始化 (黑屏/清空)
             ResetUI();
-            
-            // 2. 显示注视点 (可选缓冲)
-            fixationCross.SetActive(true);
-            yield return new WaitForSeconds(0.5f);
 
-            // 3. 根据模式播放刺激
+            // B. 注视点阶段
+            fixationCross.SetActive(true);
+            yield return new WaitForSeconds(0.5f); // 注视点固定显示0.5秒
+            fixationCross.SetActive(false);
+
+            // C. 刺激呈现阶段 (使用 Config 中的时间参数)
             if (config.mode == PresentationMode.Simultaneous)
             {
                 yield return StartCoroutine(PlaySimultaneous(currentTrial));
@@ -71,82 +84,82 @@ public class ExperimentManager : MonoBehaviour
                 yield return StartCoroutine(PlaySequential(currentTrial));
             }
 
-            fixationCross.SetActive(false);
-            // 4. 等待用户输入
+            // D. 响应阶段
             isWaitingForInput = true;
+            inputHandler.EnableInput(); // 允许输入
+            feedbackPanel.SetActive(true); // 显示"请选择"
 
-            inputHandler.EnableInput();
+            // 开始记录高频数据 (如果Recorder存在)
+            if (dataRecorder != null) dataRecorder.StartRecordingTrial(i);
 
-            feedbackPanel.SetActive(true); // 提示用户可以选择了
-            
-            dataRecorder.StartRecordingTrial(i);
-
-            // 挂起协程，直到 Update 中接收到输入
+            // 等待直到用户按键 (isWaitingForInput 变为 false)
             while (isWaitingForInput)
             {
                 yield return null; 
             }
 
-            dataRecorder.StopContinuousRecording();
+            // 停止记录高频数据
+            if (dataRecorder != null) dataRecorder.StopContinuousRecording();
 
-            // 5. 试次间隔 (ITI)
+            // E. 试次间隔 (ITI) - 休息时间
             feedbackPanel.SetActive(false);
             ResetUI();
+            
+            // 使用 Config 中的 InterTrialInterval
             yield return new WaitForSeconds(config.interTrialInterval);
         }
 
-        Debug.Log("实验结束！");
-        // TODO: 导出数据到 CSV
+        Debug.Log("所有试次结束！");
     }
 
-    // --- 并行模式逻辑 ---
+    // --- 并行模式 ---
     IEnumerator PlaySimultaneous(TrialData data)
     {
-        LoadContent(data, true, true); // 加载 A 和 B
+        LoadContent(data, true, true); // 同时加载 A 和 B
         
         containerLeft.SetActive(true);
         containerRight.SetActive(true);
 
+        // 如果是视频，开始播放
         if(config.mediaType == MediaType.Video)
         {
             vpLeft.Play();
             vpRight.Play();
         }
 
+        // 等待设定的持续时间
         yield return new WaitForSeconds(config.stimulusDuration);
 
-        // 时间到，隐藏
         containerLeft.SetActive(false);
         containerRight.SetActive(false);
     }
 
-    // --- 串行模式逻辑 ---
+    // --- 串行模式 ---
     IEnumerator PlaySequential(TrialData data)
     {
-        // 播放 A (First)
-        LoadContent(data, true, false); // 只加载 A
-        containerLeft.SetActive(true); // 假设这里用左边容器代表“第一个”
+        // 1. 播放 A
+        LoadContent(data, true, false); 
+        containerLeft.SetActive(true); 
         if (config.mediaType == MediaType.Video) vpLeft.Play();
 
         yield return new WaitForSeconds(config.stimulusDuration);
         
         containerLeft.SetActive(false);
 
-        // 间隔 (ISI)
+        // 2. 间隔 (ISI)
         yield return new WaitForSeconds(config.interStimulusInterval);
 
-        // 播放 B (Second)
-        LoadContent(data, false, true); // 只加载 B
-        containerLeft.SetActive(true); // 或者是 containerRight，取决于你想显示在同一个位置还是不同位置
-        // 如果是 Sequential，通常是在屏幕正中央先后显示，这里为了简单先复用逻辑
-        if (config.mediaType == MediaType.Video) vpLeft.Play(); // 复用 VideoPlayer
+        // 3. 播放 B
+        LoadContent(data, false, true); 
+        containerLeft.SetActive(true);
+        if (config.mediaType == MediaType.Video) vpLeft.Play();
 
         yield return new WaitForSeconds(config.stimulusDuration);
         
         containerLeft.SetActive(false);
     }
 
-    // 辅助：加载图片或准备视频
+    // 资源加载逻辑
     void LoadContent(TrialData data, bool loadA, bool loadB)
     {
         if (config.mediaType == MediaType.Image)
@@ -166,13 +179,14 @@ public class ExperimentManager : MonoBehaviour
             rawVideoLeft.gameObject.SetActive(true);
             rawVideoRight.gameObject.SetActive(true);
 
-            if(loadA && data.videoA != null) { 
+            if(loadA && data.videoA != null) 
+            { 
                 vpLeft.clip = data.videoA; 
-                // 【新增】让纹理大小自动匹配视频大小
-                AdjustRenderTexture(vpLeft);
+                AdjustRenderTexture(vpLeft); // 自动调整分辨率
                 vpLeft.Prepare(); 
             }
-            if(loadB && data.videoB != null) { 
+            if(loadB && data.videoB != null) 
+            { 
                 vpRight.clip = data.videoB; 
                 AdjustRenderTexture(vpRight);
                 vpRight.Prepare(); 
@@ -180,18 +194,38 @@ public class ExperimentManager : MonoBehaviour
         }
     }
 
+    // 用户输入回调
     void OnUserResponded(int choice)
     {
         isWaitingForInput = false;
         
-        // 记录数据
-        TrialData currentData = config.trials[currentTrialIndex];
-        bool isCorrect = (choice == currentData.correctOption);
-        dataRecorder.SaveTrialResult(currentData, choice, isCorrect);
+        // 安全检查
+        if (currentSubjectTrials != null && currentTrialIndex < currentSubjectTrials.Count)
+        {
+            TrialData currentData = currentSubjectTrials[currentTrialIndex];
+            bool isCorrect = (choice == currentData.correctOption);
+
+            // 保存数据
+            if (dataRecorder != null)
+                dataRecorder.SaveTrialResult(currentData, choice, isCorrect);
+            
+            Debug.Log($"Trial {currentTrialIndex} 结果: 选了 {choice}");
+        }
+    }
+
+    // 自动调整 RenderTexture 大小以匹配视频
+    void AdjustRenderTexture(VideoPlayer vp)
+    {
+        if (vp.clip == null || vp.targetTexture == null) return;
         
-        Debug.Log($"Trial {currentTrialIndex}: 用户选择了 {choice}, 正确与否: {isCorrect}");
-        
-        // 这里可以调用一个 DataRecorder 脚本把结果存下来
+        RenderTexture rt = vp.targetTexture;
+        if (rt.width != (int)vp.clip.width || rt.height != (int)vp.clip.height)
+        {
+            rt.Release();
+            rt.width = (int)vp.clip.width;
+            rt.height = (int)vp.clip.height;
+            rt.Create();
+        }
     }
 
     void ResetUI()
@@ -199,28 +233,5 @@ public class ExperimentManager : MonoBehaviour
         containerLeft.SetActive(false);
         containerRight.SetActive(false);
         fixationCross.SetActive(false);
-    }
-
-    void AdjustRenderTexture(VideoPlayer vp)
-    {
-        // 获取 VideoPlayer 绑定的 Render Texture
-        RenderTexture rt = vp.targetTexture;
-        
-        // 如果视频资源存在
-        if (vp.clip != null && rt != null)
-        {
-            // 如果纹理大小 和 视频原片大小 不一致，就改一下
-            if (rt.width != (int)vp.clip.width || rt.height != (int)vp.clip.height)
-            {
-                // 释放旧的内存
-                rt.Release();
-                // 设置新大小
-                rt.width = (int)vp.clip.width;
-                rt.height = (int)vp.clip.height;
-                // 重新创建
-                rt.Create();
-                Debug.Log($"已自动调整 RT 大小为: {rt.width}x{rt.height}");
-            }
-        }
     }
 }
